@@ -1,0 +1,6 @@
+{
+    "manifest_version": 3,
+    "name": "Letterboxd Streaming",
+    "description": "Letterboxd Ratings embedded in streaming sites (Netflix)",
+    "version": "1.0"
+  }
