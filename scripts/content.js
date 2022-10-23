@@ -2,23 +2,21 @@ const elementToObserve = document.querySelector("#appMountPoint");
 
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-        console.log(mutation.target);
-        console.log(mutation.target.className)
         var toChange = null;
 
         if (mutation.target.className == "videoMerchPlayer--boxart-wrapper") {
             toChange = mutation.target.parentNode.parentNode.lastChild.firstChild.firstChild.firstChild.firstChild.firstChild.firstChild.lastChild.previousSibling;
-            console.log(toChange);
+            // Get movie name
         }
         
         if (toChange != null) {
-            if (!toChange.innerHTML.includes("test")) {
-                console.log(toChange.innerHTML)
-                toChange.insertAdjacentHTML("afterend", "<span>test</span>");
-            } else {
-                console.log(toChange.innerHTML)
+            if (!toChange.parentNode.innerHTML.includes("img")) {
+                console.log(toChange.parentNode.innerHTML)
+
+                var img_src = chrome.runtime.getURL("./images/boxd-logo-dark-trans.png");
+                var inserted_html = "<img src=" + img_src + " height=50 width= 50 alt='Letterboxd Score'></img><span>3.8</span>"
+                toChange.insertAdjacentHTML("afterend", inserted_html);
             }
-            
         }
     });
 });
