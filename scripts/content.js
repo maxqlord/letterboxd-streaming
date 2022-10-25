@@ -21,17 +21,22 @@ const observer = new MutationObserver((mutations) => {
         
         if (toChange != null) {
             if (!toChange.parentNode.innerHTML.includes("img")) {
-
-                cleaned_name = name.replaceAll(" ", "+");
-                var search_url = "https://letterboxd.com/search/" + cleaned_name
-                console.log(search_url)
                 // Check cache for search URL
                 // Call search URL
+                chrome.runtime.sendMessage({
+                    contentScriptQuery: "queryFilm",
+                    name: name
+                  }, function(response) {
+                    console.log(response);
+
+                    // Search for <span class="film-title-wrapper">
+                    //<span class="film-title-wrapper"><a href="/film/zero-dark-thirty/">Zero Dark Thirty 
+                  });
                 // Parse HTML
                 // Cache rating and URL
-                var img_src = chrome.runtime.getURL("./images/boxd-logo-dark-trans.png");
-                var inserted_html = "<img src=" + img_src + " height=50 width= 50 alt='Letterboxd Score'></img><span>3.8</span>"
-                toChange.insertAdjacentHTML("afterend", inserted_html);
+                //var img_src = chrome.runtime.getURL("./images/boxd-logo-dark-trans.png");
+                //var inserted_html = "<img src=" + img_src + " height=50 width= 50 alt='Letterboxd Score'></img><span>3.8</span>"
+                //toChange.insertAdjacentHTML("afterend", inserted_html);
             }
         }
     });
