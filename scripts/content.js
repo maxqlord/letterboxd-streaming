@@ -6,7 +6,7 @@ const observer = new MutationObserver((mutations) => {
         var toChange = null;
         var name = null;
 
-        if (mutation.target.className == "videoMerchPlayer--boxart-wrapper") {
+        if (mutation.target.className == "videoMerchPlayer--boxart-wrapper" && mutation.previousSibling == null) {
             toChange = mutation.target.parentNode.parentNode.lastChild.firstChild.firstChild.firstChild.firstChild.firstChild.firstChild.lastChild.previousSibling;
             name = mutation.target.firstChild.alt;
             possibleSibling = mutation.target.parentNode.parentNode.lastChild.firstChild.firstChild.firstChild.firstChild.firstChild.firstChild.nextSibling;
