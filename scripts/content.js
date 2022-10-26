@@ -1,3 +1,4 @@
+// v2: Link to boxd film page on large film card after clicking hovered film card, async/await refactor 
 const elementToObserve = document.querySelector("#appMountPoint");
 
 const observer = new MutationObserver((mutations) => {
@@ -21,7 +22,6 @@ const observer = new MutationObserver((mutations) => {
         
         if (toChange != null) {
             if (!toChange.parentNode.innerHTML.includes("img")) {
-                // Check cache for search URL
                 chrome.runtime.sendMessage({
                     contentScriptQuery: "queryFilm",
                     name: name
@@ -48,7 +48,6 @@ const observer = new MutationObserver((mutations) => {
                                     var rating_hundredth_str = rating_back_half.substring(rating_offset, rating_end_index)
                                     var rating = parseFloat(rating_hundredth_str).toFixed(1).toString()
                                     var img_src = chrome.runtime.getURL("./images/boxd-logo-dark-trans.png");
-                                    // v2: Link to boxd film page on large film card after clicking hovered film card 
                                     if (!toChange.parentNode.innerHTML.includes("Letterboxd")) {
                                         var inserted_html = "<img src=" + img_src + " height=50 width= 50 alt='Letterboxd Score'></img><span>" + rating + "</span>"
                                         toChange.insertAdjacentHTML("afterend", inserted_html);
