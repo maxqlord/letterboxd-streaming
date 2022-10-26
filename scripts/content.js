@@ -22,21 +22,43 @@ const observer = new MutationObserver((mutations) => {
         if (toChange != null) {
             if (!toChange.parentNode.innerHTML.includes("img")) {
                 // Check cache for search URL
-                // Call search URL
                 chrome.runtime.sendMessage({
                     contentScriptQuery: "queryFilm",
                     name: name
-                  }, function(response) {
-                    console.log(response);
+                  }, function(search_response) {
+                    var film_index = search_response.search("film-title-wrapper");
+                    var film_offset = 29;
 
-                    // Search for <span class="film-title-wrapper">
-                    //<span class="film-title-wrapper"><a href="/film/zero-dark-thirty/">Zero Dark Thirty 
-                  });
-                // Parse HTML
-                // Cache rating and URL
-                //var img_src = chrome.runtime.getURL("./images/boxd-logo-dark-trans.png");
-                //var inserted_html = "<img src=" + img_src + " height=50 width= 50 alt='Letterboxd Score'></img><span>3.8</span>"
-                //toChange.insertAdjacentHTML("afterend", inserted_html);
+                    if (film_index != -1) {
+                        var film_url_start_index = film_index + film_offset;
+                        var search_response_back_half = search_response.substring(film_url_start_index);
+                        var film_url_end_index = search_response_back_half.indexOf('"');
+                        var film_url = search_response_back_half.substring(0, film_url_end_index);
+
+                        chrome.runtime.sendMessage({
+                            contentScriptQuery: "queryFilmRating",
+                            film_url: film_url
+                          }, function(response) {
+                                var rating_area_index = response.search("ratingValue");
+                                var rating_offset = 13
+
+                                if (rating_area_index != -1) {
+                                    var rating_back_half = response.substring(rating_area_index)
+                                    var rating_end_index = rating_back_half.indexOf(',')
+                                    var rating_hundredth_str = rating_back_half.substring(rating_offset, rating_end_index)
+                                    var rating = parseFloat(rating_hundredth_str).toFixed(1).toString()
+                                    var img_src = chrome.runtime.getURL("./images/boxd-logo-dark-trans.png");
+                                    // v2: Link to boxd film page on large film card after clicking hovered film card 
+                                    if (!toChange.parentNode.innerHTML.includes("Letterboxd")) {
+                                        var inserted_html = "<img src=" + img_src + " height=50 width= 50 alt='Letterboxd Score'></img><span>" + rating + "</span>"
+                                        toChange.insertAdjacentHTML("afterend", inserted_html);
+                                    }
+
+                                }
+                                
+                          });
+                    }
+                });
             }
         }
     });
